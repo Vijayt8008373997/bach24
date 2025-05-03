@@ -1,1 +1,143 @@
-jenkinsfile
+pipeline {
+    agent any
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning GitHub Repository from main branch...'
+                git branch: 'main', url: 'https://github.com/sureshgitnew/Newproject1.git'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                echo 'Compiling Java program...'
+                sh 'javac Hello.java'
+            }
+        }
+
+        stage('Run') {
+            steps {
+                echo 'Running Java program...'
+                sh 'java Hello'
+            }
+        }
+    }
+}
+===============================================================================================================
+node {
+    stage('Clone Repository') {
+        echo 'Cloning GitHub Repository from main branch...'
+        git branch: 'main', url: 'https://github.com/sureshgitnew/Newproject1.git'
+    }
+
+    stage('Compile') {
+        echo 'Compiling Java program...'
+        sh 'javac Hello.java'
+    }
+
+    stage('Run') {
+        echo 'Running Java program...'
+        sh 'java Hello'
+    }
+}
+=============================================================================
+
+pipeline {
+    agent any
+    environment {
+        PATH = "/opt/maven/apache-maven-3.9.9/bin:$PATH"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from GitHub
+                git 'https://github.com/sureshgitnew/test-maven.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build the Maven project
+                sh 'mvn clean install package'
+            }
+        }
+    }
+
+}
+====================================================================================================================
+pipeline {
+    agent any
+    environment {
+        PATH = "/opt/maven/apache-maven-3.9.9/bin:$PATH"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from GitHub
+                  git branch: 'main', url: 'https://github.com/sureshgitnew/jenkinsjavacoderepo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build the Maven project
+                dir('Javarepo1') {
+                sh 'mvn clean install package'
+                }
+            }
+        }
+    }
+
+}
+
+======================================================================================================================
+
+node {
+    // Set the Maven path in the environment
+    env.PATH = "/opt/maven/apache-maven-3.9.9/bin:${env.PATH}"
+    
+    try {
+        stage('Checkout') {
+            // Checkout code from GitHub
+            git 'https://github.com/sureshgitnew/test-maven.git'
+        }
+        
+        stage('Build') {
+            // Build the Maven project
+            sh 'mvn clean install package'
+        }
+    } catch (Exception e) {
+        // Handle any exceptions
+        echo "Build failed: ${e.getMessage()}"
+        currentBuild.result = 'FAILURE'
+    }
+}
+
+
+===========================================================================================================
+
+
+node {
+    // Define the Maven path in the environment
+    env.PATH = "/opt/maven/apache-maven-3.9.9/bin:${env.PATH}"
+    
+    try {
+        stage('Checkout') {
+            // Checkout code from GitHub
+            git branch: 'main', url: 'https://github.com/sureshgitnew/jenkinsjavacoderepo.git'
+        }
+        
+        stage('Build') {
+            // Navigate to Javarepo1 directory and build the Maven project
+            dir('Javarepo1') {
+                sh 'mvn clean install package'
+            }
+        }
+    } catch (Exception e) {
+        // Handle any exceptions
+        echo "Build failed: ${e.getMessage()}"
+        currentBuild.result = 'FAILURE'
+    }
+}
+==============================================================
